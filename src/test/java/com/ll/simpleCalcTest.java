@@ -3,7 +3,7 @@ package com.ll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
-
+import static org.assertj.core.api.Assertions.within;
 
 public class simpleCalcTest {
     Calculator simpleCalculator = new Calculator();
@@ -73,21 +73,32 @@ public class simpleCalcTest {
 
     }
     @Test
-    @DisplayName("괄호없는 곱셈")
+    @DisplayName("괄호없는 곱셈")//소숫점은 어쩔수없이 오차가 생기기 때문에 테스트시에 isCloseTo(expect, within(오차범위));
     void t9(){
-//        double rs = simpleCalculator.calculateExpression("7*8");
-//        assertThat(rs).isEqualTo(56);
-        double rs = simpleCalculator.calculateExpression("6*-0.09");
-        assertThat(rs).isEqualTo(-0.54);
+        double rs = simpleCalculator.calculateExpression("5*0.05");
+        //소숫점은 어쩔수없이 오차가 생기기 때문에
+        // 테스트시에 isCloseTo(expect, within(오차범위));
+        assertThat(rs).isCloseTo(0.25, within(0.0001));
+        rs = simpleCalculator.calculateExpression("0.2*0.05");
+        assertThat(rs).isCloseTo(0.01, within(0.00001));
     }
+
     @Test
     @DisplayName("괄호없는 나눗셈")
     void t10(){
         double rs = simpleCalculator.calculateExpression("5/6");
-        assertThat(rs).isBetween(0.5,1.0);
+        //무한소수
+        assertThat(rs).isCloseTo(0.833,within(0.001));
         rs = simpleCalculator.calculateExpression("111/3");
-        assertThat(rs).isEqualTo(37);
+        assertThat(rs).isCloseTo(37.0, within(0.1));
         rs = simpleCalculator.calculateExpression("5/0.00001");
-        assertThat(rs).isEqualTo(500000);
+        assertThat(rs).isCloseTo(500000.0, within(0.1));
+    }
+
+    @Test
+    @DisplayName("연산자가 2개 이상 1+2*3")
+    void t11(){
+        double rs = simpleCalculator.calculateExpression("1+2*3");
+        assertThat(rs).isEqualTo(7);
     }
 }

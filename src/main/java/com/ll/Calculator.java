@@ -29,12 +29,10 @@ class Calculator {
             String[] query = expression.split("-");
             return minus(Double.parseDouble(query[0]), Double.parseDouble(query[1]));
         }
-        if(expression.contains("*")){
-            String[] query = expression.split("*");
-            return multiply(Double.parseDouble(query[0]), Double.parseDouble(query[1]));
-//            return -0.54;
-        }
-        if(expression.contains("\\/")){
+        else if(expression.contains("*")){
+            String[] query = expression.split("\\*");
+            return multiply(Double.parseDouble(query[0]), Double.parseDouble(query[1]));}
+        if(expression.contains("/")){
             String[] query = expression.split("/");
             return divide(Double.parseDouble(query[0]), Double.parseDouble(query[1]));
         }
