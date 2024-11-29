@@ -72,6 +72,16 @@ public class simpleCalcTest {
         double rs = simpleCalculator.calculateExpression("2*3/2");
         assertThat(rs).isEqualTo(3);
     }
-
-
+    @Test
+    @DisplayName("덧셈 잘되는지")
+    void t9(){
+        double rs = simpleCalculator.calculateExpression("20+9");
+        assertThat(rs).isEqualTo(29);
+    }
+    @Test
+    @DisplayName("뺄셈 잘되는지")
+    void t10(){
+        double rs = simpleCalculator.calculateExpression("20-39");
+        assertThat(rs).isEqualTo(-19);
+    }
 }

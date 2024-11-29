@@ -44,21 +44,34 @@ class Calculator {
         return new int[]{leftIndex, rightIndex};
     }
 
-
-    public double calculateExpression(String expression) {
-        //재귀 종료조건
-        if (!expression.contains("+") && !expression.contains("-") &&
-                !expression.contains("*") && !expression.contains("/")) return Double.parseDouble(expression);
-
-        // 연산자 찾기
-        int firstOperatorIndex = -1;
+    public int getPriorityOperator(String expression){
+        int operatorIndex = -1;
         for (int i = 0; i < expression.length(); i++) {
             char cur = expression.charAt(i);
             if (cur == '*' || cur == '/') {
-                firstOperatorIndex = i;
-                break;
+                operatorIndex = i;
+                return operatorIndex;
             }
         }
+        for (int i = 0; i < expression.length(); i++) {
+            char cur = expression.charAt(i);
+            if (cur == '+' || cur == '-') {
+                operatorIndex = i;
+                return operatorIndex;
+            }
+        }
+        return operatorIndex;
+    }
+
+
+    public double calculateExpression(String expression) {
+        //재귀 종료조건
+        if (!expression.substring(1).contains("+") && !expression.substring(1).contains("-") &&
+                !expression.substring(1).contains("*") && !expression.substring(1).contains("/")) return Double.parseDouble(expression);
+
+        // 연산자 찾기 - getPriorityOperator 메소드로 분리
+        int firstOperatorIndex = getPriorityOperator(expression);;
+
         double temp = 0;
         //곱 나눗셈 처리
         if (firstOperatorIndex != -1) {
@@ -77,6 +90,10 @@ class Calculator {
                 temp = multiply(leftNumber, rightNumber);
             } else if (expression.charAt(firstOperatorIndex) == '/') {
                 temp = divide(leftNumber, rightNumber);
+            } else if (expression.charAt(firstOperatorIndex) == '+') {
+                temp = plus(leftNumber, rightNumber);
+            } else if (expression.charAt(firstOperatorIndex) == '-') {
+                temp = minus(leftNumber, rightNumber);
             }
 
             String newExpression = expression.substring(0, flag[0])
