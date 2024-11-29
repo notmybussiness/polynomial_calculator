@@ -20,6 +20,45 @@ class Calculator {
         return num1 / num2;
     }
 
+    public String excludeParenth(String expression){
+        int[] parentheses = findInnerMostParentheses(expression);
+        if(parentheses[0] == -1 && parentheses[1] == -1){
+            return expression;
+        }
+        else{
+            //괄호가 없는 ..
+            String noparenthese = expression.substring(parentheses[0]+1,parentheses[1]);
+            String newexpression =  expression.substring(0,parentheses[0])
+                                    +calculateExpression(noparenthese)
+                                    +expression.substring(parentheses[1]+1);
+            return newexpression;
+        }
+    }
+
+    private int[] findInnerMostParentheses(String expression) {
+        int depth = 0;           // 현재 괄호의 깊이
+        int maxDepth = 0;        // 지금까지 본 괄호 중 가장 깊은 깊이
+        int startIndex = -1;     // 가장 안쪽 괄호의 시작 위치
+        //depth 000011112222211111000 이렇게되면
+        // 222222이부분 잘라서 먼저 calculateExrpession()해버림
+        for (int i = 0; i < expression.length(); i++) {
+            if (expression.charAt(i) == '(') {
+                depth++;
+                // 더 깊은 괄호를 발견하면 시작 위치를 갱신
+                if (depth > maxDepth) {
+                    maxDepth = depth;
+                    startIndex = i;
+                }
+            } else if (expression.charAt(i) == ')' && depth == maxDepth) {
+                // 가장 깊은 깊이의 닫는 괄호를 찾으면 즉시 반환
+                return new int[]{startIndex, i};
+            } else if (expression.charAt(i) == ')') {
+                depth--;
+            }
+        }
+        return new int[]{-1, -1}; // 괄호가 없는 경우
+    }
+
     public int[] findNumber(String expression, int operatorIndex) {
         int leftIndex = operatorIndex-1;
         int rightIndex = operatorIndex + 1;
@@ -34,9 +73,9 @@ class Calculator {
 
        leftIndex++;
 
-        while (rightIndex < expression.length() && Character.isDigit(expression.charAt(rightIndex))||
-                expression.charAt(rightIndex) =='.'||
-                (expression.charAt(rightIndex) =='-' && rightIndex == operatorIndex+1)){
+        while ((rightIndex < expression.length() && Character.isDigit(expression.charAt(rightIndex))) ||
+                (rightIndex < expression.length() && expression.charAt(rightIndex) =='.') ||
+                (rightIndex < expression.length() && expression.charAt(rightIndex) =='-' && rightIndex == operatorIndex+1)){
             rightIndex++;
             if(rightIndex >= expression.length()) break;
         }
@@ -66,8 +105,19 @@ class Calculator {
 
     public double calculateExpression(String expression) {
         //재귀 종료조건
-        if (!expression.substring(1).contains("+") && !expression.substring(1).contains("-") &&
-                !expression.substring(1).contains("*") && !expression.substring(1).contains("/")) return Double.parseDouble(expression);
+        while(expression.contains("(")){
+            expression = excludeParenth(expression);
+        }
+
+        if (!expression.contains("+") &&
+                !expression.contains("*") &&
+                !expression.contains("/") &&
+                !expression.contains("(") &&
+                !expression.contains(")") &&
+                // '-'는 첫 번째 위치에서만 허용
+                (expression.indexOf("-") <= 0 || expression.lastIndexOf("-") == 0)) {
+            return Double.parseDouble(expression);
+        }
 
         // 연산자 찾기 - getPriorityOperator 메소드로 분리
         int firstOperatorIndex = getPriorityOperator(expression);;

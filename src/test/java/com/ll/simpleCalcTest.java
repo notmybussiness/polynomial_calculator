@@ -84,4 +84,31 @@ public class simpleCalcTest {
         double rs = simpleCalculator.calculateExpression("20-39");
         assertThat(rs).isEqualTo(-19);
     }
+
+    @Test
+    @DisplayName("다항식 계산 해보자 +와 * 와 - 와 /")
+    void test1(){
+        double rs = simpleCalculator.calculateExpression("20-38/19*-23");
+        assertThat(rs).isEqualTo(66);
+    }
+    @Test
+    @DisplayName("괄호가 있는 1+1")
+    void test2(){
+        double rs = simpleCalculator.calculateExpression("(1+1)");
+        assertThat(rs).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("괄호가 있는 1-3")
+    void test3(){
+        double rs = simpleCalculator.calculateExpression("((1-3))");
+        assertThat(rs).isEqualTo(-2);
+    }
+
+    @Test
+    @DisplayName("복잡한 다항식")
+    void test4(){
+        double rs = simpleCalculator.calculateExpression("(1+4*5-1)*6/3+8*9/3-2");
+        assertThat(rs).isEqualTo(62);
+    }
 }
